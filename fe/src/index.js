@@ -6,8 +6,10 @@ import { UserRegularLoans } from './pages/UserRegularLoans';
 import { UserPettyLoans } from './pages/UserPettyLoans';
 import { AdminRegularLoans } from './pages/AdminRegularLoans';
 import { AdminLoanDetails } from './pages/AdminLoanDetails';
+import { AdminDashboard } from './pages/AdminDashboard';
 import { UserApplyLoans } from './pages/UserApplyLoans';
 import { UserLoanDetails } from './pages/UserLoanDetails';
+import { UserDashboard } from './pages/UserDashboard';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 
@@ -22,12 +24,14 @@ root.render(
       <Routes>
         <Route path='/' element={<Page />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/registration' element={<Register />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/user/dashboard' element={<UserDashboard />} />
         <Route path='/user/regular-loan' element={<UserRegularLoans />} />
         <Route path='/user/petty-loan' element={<UserPettyLoans />} />
         <Route path='/user/apply-loan/' element={<UserApplyLoans />} />
         <Route path='/user/loan-details/:id' element={<UserLoanDetails />} />
 
+        <Route path='/admin/dashboard' element={<AdminDashboard />} />
         <Route path='/admin/regular-loan' element={<AdminRegularLoans />} />
         <Route path='/admin/loan-details/:id' element={<AdminLoanDetails />} />
       </Routes>

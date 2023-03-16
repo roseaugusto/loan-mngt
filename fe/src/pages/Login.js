@@ -20,10 +20,8 @@ export const Login = () => {
         localStorage.setItem('user', JSON.stringify(res.data.user));
         if (res.data.user.role === 'admin') {
           window.location.href = '/admin/dashboard';
-        } else if (res.data.user.role === 'instructor') {
-          window.location.href = '/instructor/subjects';
         } else {
-          window.location.href = '/student/subjects';
+          window.location.href = '/user/dashboard';
         }
       })
       .catch((e) => alert('Invalid credentials'));
@@ -59,7 +57,7 @@ export const Login = () => {
                     Login
                   </button>
                   <br />
-                  <a href='/registration'>Don't have an account? Register Here</a>
+                  <a href='/register'>Don't have an account? Register Here</a>
                 </div>
               </form>
             </div>
