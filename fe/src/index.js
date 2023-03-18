@@ -4,12 +4,16 @@ import ReactDOM from 'react-dom/client';
 import { Page } from './pages/Page';
 import { UserRegularLoans } from './pages/UserRegularLoans';
 import { UserPettyLoans } from './pages/UserPettyLoans';
-import { AdminRegularLoans } from './pages/AdminRegularLoans';
-import { AdminLoanDetails } from './pages/AdminLoanDetails';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { UserApplyLoans } from './pages/UserApplyLoans';
 import { UserLoanDetails } from './pages/UserLoanDetails';
+import { LoanDetailsDownload } from './pages/LoanDetailsDownload';
+import { LoanPaymentsDownload } from './pages/LoanPaymentsDownload';
+import { SavingsDownload } from './pages/SavingsDownload';
 import { UserDashboard } from './pages/UserDashboard';
+import { Withdraw } from './pages/Withdraw';
+import { Deposit } from './pages/Deposit';
+import { Savings } from './pages/Savings';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 
@@ -30,10 +34,15 @@ root.render(
         <Route path='/user/petty-loan' element={<UserPettyLoans />} />
         <Route path='/user/apply-loan/' element={<UserApplyLoans />} />
         <Route path='/user/loan-details/:id' element={<UserLoanDetails />} />
+        <Route path='/user/loan-details/:id/download' element={<LoanDetailsDownload />} />
+        <Route path='/user/loan-payments/:id/download' element={<LoanPaymentsDownload />} />
 
         <Route path='/admin/dashboard' element={<AdminDashboard />} />
-        <Route path='/admin/regular-loan' element={<AdminRegularLoans />} />
-        <Route path='/admin/loan-details/:id' element={<AdminLoanDetails />} />
+
+        <Route path='/withdraw' element={<Withdraw />} />
+        <Route path='/deposit' element={<Deposit />} />
+        <Route path='/savings' element={<Savings />} />
+        <Route path='/savings/download' element={<SavingsDownload />} />
       </Routes>
     </Router>
   </React.StrictMode>,

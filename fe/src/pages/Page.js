@@ -37,24 +37,24 @@ export const Page = ({ children, title = '' }) => {
               <Nav.Link href={user?.role === 'admin' ? '/admin/dashboard' : '/user/dashboard'}>
                 Home
               </Nav.Link>
-              {user?.role === 'member' ? <Nav.Link href='#action2'>Member Info</Nav.Link> : null}
+              <Nav.Link href='#action2'>Member Info</Nav.Link>
 
-              <Nav.Link href='#action3'>Savings</Nav.Link>
+              <NavDropdown title='CBU' id='navbarScrollingDropdown'>
+                <NavDropdown.Item href='/savings'>Savings</NavDropdown.Item>
+                {user?.role === 'admin' ? (
+                  <>
+                    <NavDropdown.Item href='/withdraw'>Withdraw</NavDropdown.Item>
+                    <NavDropdown.Item href='/deposit'>Deposit</NavDropdown.Item>
+                  </>
+                ) : null}
+              </NavDropdown>
               <NavDropdown title='Loans' id='navbarScrollingDropdown'>
                 {user?.role === 'member' ? (
                   <NavDropdown.Item href='/user/apply-loan'>Apply Loan</NavDropdown.Item>
                 ) : null}
 
-                <NavDropdown.Item
-                  href={user?.role === 'admin' ? '/admin/regular-loan' : '/user/regular-loan'}
-                >
-                  Regular Loan
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  href={user?.role === 'admin' ? '/admin/petty-loan' : '/user/petty-loan'}
-                >
-                  Petty Cash
-                </NavDropdown.Item>
+                <NavDropdown.Item href='/user/regular-loan'>Regular Loan</NavDropdown.Item>
+                <NavDropdown.Item href='/user/petty-loan'>Petty Cash</NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>

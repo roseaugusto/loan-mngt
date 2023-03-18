@@ -1,8 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Page } from './Page';
 import { Breadcrumb, Table, Badge } from 'react-bootstrap';
+import { apiRequest } from '../utils/apiRequest';
 
 export const UserRegularLoans = () => {
+  const [loans, setLoans] = useState([]);
+  const [user, setUser] = useState({});
+  const fetchData = async () => {
+    await apiRequest.get('/loans?type=regular').then((res) => {
+      setLoans(res.data || []);
+    });
+  };
+
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem('user') || {}));
+    fetchData();
+  }, []);
+
   const getStatus = (status = 'ongoing') => {
     switch (status) {
       case 'cancelled':
@@ -29,8 +43,14 @@ export const UserRegularLoans = () => {
       <Table striped bordered hover size='sm'>
         <thead>
           <tr>
-            <th>#</th>
             <th>Reference Number</th>
+            {user?.role === 'admin' ? (
+              <>
+                {' '}
+                <th>Member ID</th>
+                <th>Member Name</th>
+              </>
+            ) : null}
             <th>Loan Date</th>
             <th>Check Amount / Disbursed Amount</th>
             <th>Loan Amount</th>
@@ -38,25 +58,36 @@ export const UserRegularLoans = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>
-              <a href='/'>R0001</a>
-            </td>
-            <td>Mar 3, 2023</td>
-            <td>20,00</td>
-            <td>26,000</td>
-            <td>
-              <Badge bg={getStatus()} className='text-white'>
-                Ongoing
-              </Badge>
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={6} className='text-center'>
-              No Loan/s available
-            </td>
-          </tr>
+          {loans?.length === 0 ? (
+            <tr>
+              <td colSpan={7} className='text-center'>
+                No Loan/s available
+              </td>
+            </tr>
+          ) : (
+            loans.map((key, index) => (
+              <tr key={index}>
+                <td>
+                  <a href={`/user/loan-details/${key.id}`}>{key.code}</a>
+                </td>
+                {user?.role === 'admin' ? (
+                  <>
+                    {' '}
+                    <td>{key.user.id}</td>
+                    <td>{key.user.name}</td>
+                  </>
+                ) : null}
+                <td>{key.created_at}</td>
+                <td>{key.check_amount.toLocaleString()}</td>
+                <td>{key.loan_amount.toLocaleString()}</td>
+                <td>
+                  <Badge bg={getStatus(key.status)} className='text-white'>
+                    {key.status}
+                  </Badge>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </Table>
     </Page>

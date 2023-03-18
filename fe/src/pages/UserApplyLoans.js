@@ -5,16 +5,16 @@ import { apiRequest } from '../utils/apiRequest';
 
 export const UserApplyLoans = () => {
   const [loan, setLoan] = useState({
-    amount: '',
+    loan_amount: '',
     type: 'regular',
   });
 
   const onSubmit = async (e) => {
     e.preventDefault();
     await apiRequest
-      .post('/loan', loan)
+      .post('/loans', loan)
       .then((res) => {
-        window.location.href = '/user-regular-loan';
+        window.location.href = loan.type === 'regular' ? '/user/regular-loan' : '/user/petty-loan';
       })
       .catch((e) => alert('Missing Fields'));
   };
@@ -34,7 +34,7 @@ export const UserApplyLoans = () => {
             type='number'
             className='form-control'
             pattern='^[0-9,]*$'
-            onChange={(e) => setLoan({ ...loan, amount: e.target.value })}
+            onChange={(e) => setLoan({ ...loan, loan_amount: e.target.value })}
             required
           />
         </div>
@@ -46,6 +46,7 @@ export const UserApplyLoans = () => {
               type='radio'
               name='typeRadios'
               value='regular'
+              onChange={(e) => setLoan({ ...loan, type: e.target.value })}
               required
             />
             <label className='form-check-label' for='exampleRadios2'>
@@ -58,6 +59,7 @@ export const UserApplyLoans = () => {
               type='radio'
               name='typeRadios'
               value='petty'
+              onChange={(e) => setLoan({ ...loan, type: e.target.value })}
               required
             />
             <label className='form-check-label'>Petty Cash</label>
