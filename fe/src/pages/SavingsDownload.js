@@ -45,10 +45,14 @@ export const SavingsDownload = () => {
 
   return (
     <>
-      {' '}
+      <a href={`/savings`}>
+        <button className='btn btn-primary float-right' style={{ margin: '80px 80px 160px 10px' }}>
+          Back
+        </button>
+      </a>
       <button
         className='btn btn-primary float-right'
-        style={{ margin: '80px 160px' }}
+        style={{ margin: '80px 0px' }}
         onClick={() => generatePDF()}
       >
         Download

@@ -1,7 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { Page } from './Page';
-import { Breadcrumb, ListGroup, Card } from 'react-bootstrap';
+import { Breadcrumb, ListGroup, Card, Col, Row } from 'react-bootstrap';
 import { apiRequest } from '../utils/apiRequest';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCalendar,
+  faMoneyBill,
+  faUsers,
+  faCoins,
+  faLongArrowUp,
+  faLongArrowDown,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  Filler,
+  Title,
+  Tooltip,
+  Legend,
+  PointElement,
+);
 
 export const AdminDashboard = () => {
   const [user, setUser] = useState({});
@@ -13,15 +45,152 @@ export const AdminDashboard = () => {
     });
   };
 
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: false,
+      },
+    },
+  };
+
+  const labels = data.chart ? Object.keys(data.chart) : [];
+
+  const chartdata = {
+    labels,
+    datasets: [
+      {
+        fill: true,
+        data: data.chart ? Object.entries(data.chart) : [],
+        backgroundColor: '#b3bcf7',
+        borderColor: '#6778ee',
+      },
+    ],
+  };
+
+  const calculate = (type) => {
+    let diff = data[type]?.latest - data[type]?.previous;
+    let total = data[type]?.latest + data[type]?.previous;
+
+    return (diff / total) * 100;
+  };
+
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem('user') || {}));
     fetchData();
   }, []);
   return (
     <Page title='Admin Dashboard'>
-      <Breadcrumb>
-        <Breadcrumb.Item active>Home</Breadcrumb.Item>
-      </Breadcrumb>
+      <Row xs={1} md={4} className='g-4'>
+        <Col>
+          <Card style={{ minHeight: '180px' }}>
+            <Card.Body>
+              <Card.Title>CBU</Card.Title>
+              <Card.Text>
+                <div className='d-flex align-items-center justify-content-between'>
+                  <div>
+                    <h5>0.00</h5>
+                    <div
+                      className={`mt-4 ${calculate('cbu') < 0 ? 'text-danger' : 'text-success'}`}
+                    >
+                      <FontAwesomeIcon
+                        icon={calculate('cbu') < 0 ? faLongArrowDown : faLongArrowUp}
+                        color={calculate('cbu') < 0 ? 'red' : 'green'}
+                      />
+                      <span className='ml-2'>{calculate('cbu')}%</span>
+                    </div>
+                  </div>
+                  <FontAwesomeIcon icon={faCalendar} size='2xl' color='purple' />
+                </div>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card style={{ minHeight: '180px' }}>
+            <Card.Body>
+              <Card.Title>REGULAR LOAN TOTAL INTEREST EARNED</Card.Title>
+              <Card.Text>
+                <div className='d-flex align-items-center justify-content-between'>
+                  <div>
+                    <h5>0.00</h5>
+                    <div
+                      className={`mt-4 ${calculate('loan') < 0 ? 'text-danger' : 'text-success'}`}
+                    >
+                      <FontAwesomeIcon
+                        icon={calculate('loan') < 0 ? faLongArrowDown : faLongArrowUp}
+                        color={calculate('loan') < 0 ? 'red' : 'green'}
+                      />
+                      <span className='ml-2'>{calculate('loan')}%</span>
+                    </div>
+                  </div>
+                  <FontAwesomeIcon icon={faMoneyBill} size='2xl' color='green' />
+                </div>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card style={{ minHeight: '180px' }}>
+            <Card.Body>
+              <Card.Title>MEMBERS</Card.Title>
+              <Card.Text>
+                <div className='d-flex align-items-center justify-content-between'>
+                  <div>
+                    <h5>0.00</h5>
+                    <div
+                      className={`mt-4 ${calculate('user') < 0 ? 'text-danger' : 'text-success'}`}
+                    >
+                      <FontAwesomeIcon
+                        icon={calculate('user') < 0 ? faLongArrowDown : faLongArrowUp}
+                        color={calculate('user') < 0 ? 'red' : 'green'}
+                      />
+                      <span className='ml-2'>{calculate('user')}%</span>
+                    </div>
+                  </div>
+                  <FontAwesomeIcon icon={faUsers} size='2xl' color='blue' />
+                </div>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card style={{ minHeight: '180px' }}>
+            <Card.Body>
+              <Card.Title>PAYDAY PAYMENT</Card.Title>
+              <Card.Text>
+                <div className='d-flex align-items-center justify-content-between'>
+                  <div>
+                    <h5>0.00</h5>
+                    <div
+                      className={`mt-4 ${
+                        calculate('payment') < 0 ? 'text-danger' : 'text-success'
+                      }`}
+                    >
+                      <FontAwesomeIcon
+                        icon={calculate('payment') < 0 ? faLongArrowDown : faLongArrowUp}
+                        color={calculate('payment') < 0 ? 'red' : 'green'}
+                      />
+                      <span className='ml-2'>{calculate('payment')}%</span>
+                    </div>
+                  </div>
+                  <FontAwesomeIcon icon={faCoins} size='2xl' color='gold' />
+                </div>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+      <br />
+      <Card>
+        <Card.Body>
+          <Card.Title style={{ color: '#6778ee' }}>Yearly Recap Report for CBU</Card.Title>
+          <Line options={options} data={chartdata} />
+        </Card.Body>
+      </Card>
       <br />
       <Card>
         <Card.Body>

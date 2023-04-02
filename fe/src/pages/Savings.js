@@ -20,13 +20,15 @@ export const Savings = () => {
   return (
     <Page title='Savings'>
       <Breadcrumb>
-        <Breadcrumb.Item href='#'>Home</Breadcrumb.Item>
+        <Breadcrumb.Item href={user?.role === 'admin' ? '/admin/dashboard' : '/user/dashboard'}>
+          Home
+        </Breadcrumb.Item>
         <Breadcrumb.Item active>Savings</Breadcrumb.Item>
       </Breadcrumb>
 
       <Container className='py-3 px-0'>
-        <Row>
-          <Col className='text-left'>
+        <Row className='mx-0'>
+          <Col className='text-left px-0'>
             <a href='/savings/download' target='_blank' rel='noreferrer'>
               <button className='btn btn-primary'>Generate Report</button>
             </a>

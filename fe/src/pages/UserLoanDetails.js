@@ -9,7 +9,13 @@ import { Breadcrumb, Table, Badge, Container, Row, Col, Tabs, Tab } from 'react-
 export const UserLoanDetails = () => {
   const { id } = useParams();
   const [loan, setLoan] = useState([]);
-  const [totals, setTotals] = useState({ amortization: 0, interest: 0, principal: 0, payments: 0 });
+  const [totals, setTotals] = useState({
+    amortization: 0,
+    interest: 0,
+    principal: 0,
+    payments: 0,
+    penalty: 0,
+  });
   const [tabKey, setTabKey] = useState('details');
   const [user, setUser] = useState({});
 
@@ -31,10 +37,12 @@ export const UserLoanDetails = () => {
       let asum = 0;
       let isum = 0;
       let psum = 0;
+      let pnsum = 0;
       res.data?.statements.map((key) => {
         asum = asum + key.amortization;
         isum = isum + key.interest;
         psum = psum + key.principal;
+        pnsum = pnsum + key.penalty;
       });
       let x = { ...totals };
       setTotals({ ...totals, amortization: asum, interest: isum, principal: psum });
@@ -44,8 +52,6 @@ export const UserLoanDetails = () => {
         sum = sum + key.amount;
       });
       setTotals({ ...totals, payments: sum });
-
-      console.log(totals);
     });
   };
 
@@ -96,7 +102,9 @@ export const UserLoanDetails = () => {
   return (
     <Page title='Loan Details'>
       <Breadcrumb>
-        <Breadcrumb.Item href='#'>Home</Breadcrumb.Item>
+        <Breadcrumb.Item href={user?.role === 'admin' ? '/admin/dashboard' : '/user/dashboard'}>
+          Home
+        </Breadcrumb.Item>
         <Breadcrumb.Item href={loan.type === 'petty' ? '/user/petty-loan' : '/user/regular-loan'}>
           {loan.type === 'petty' ? 'Petty Cash Loans' : 'Regular Loans'}
         </Breadcrumb.Item>
@@ -157,7 +165,7 @@ export const UserLoanDetails = () => {
                 <tr>
                   <th>Applicable Month</th>
                   <th>Due Date</th>
-                  <th colSpan={3}>Amount</th>
+                  <th colSpan={4}>Amount</th>
                   <th>Outstanding Principal Balance</th>
                   <th>Status</th>
                   {user?.role === 'admin' ? <th>Actions</th> : null}
@@ -168,12 +176,13 @@ export const UserLoanDetails = () => {
                   <th>Amortization</th>
                   <th>Interest</th>
                   <th>Principal</th>
+                  <th>Penalty</th>
                   <th />
                   <th />
                   <th />
                 </tr>
                 <tr>
-                  <th colSpan={5} />
+                  <th colSpan={6} />
                   <th>Php {loan.loan_amount?.toLocaleString()}</th>
                   <th />
                   <th />
@@ -187,6 +196,7 @@ export const UserLoanDetails = () => {
                     <td>Php {key.amortization.toLocaleString()}</td>
                     <td>Php {key.interest.toLocaleString()}</td>
                     <td>Php {key.principal.toLocaleString()}</td>
+                    <td>Php {key.penalty?.toLocaleString() || 0}</td>
                     <td>Php {key.outstanding.toLocaleString()}</td>
                     <td>
                       <Badge bg={getStatus(key.status)} className='text-white px-4'>
@@ -211,6 +221,7 @@ export const UserLoanDetails = () => {
                   <th>Php {calculate('amortization').toLocaleString()}</th>
                   <th>Php {calculate('interest').toLocaleString()}</th>
                   <th>Php {calculate('principal').toLocaleString()}</th>
+                  <th>Php {calculate('penalty').toLocaleString()}</th>
                   <th colSpan={3} />
                 </tr>
               </tbody>

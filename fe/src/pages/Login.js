@@ -4,17 +4,14 @@ import Image from 'react-bootstrap/Image';
 
 export const Login = () => {
   const [user, setUser] = useState({
-    email: '',
+    name: '',
     password: '',
   });
 
   const onSubmit = async (e) => {
     e.preventDefault();
     await apiRequest
-      .post('/login', {
-        email: user.email,
-        password: user.password,
-      })
+      .post('/login', user)
       .then((res) => {
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('user', JSON.stringify(res.data.user));
@@ -34,14 +31,14 @@ export const Login = () => {
           <div className='d-flex flex-row align-items-center'>
             <div className='p-5 w-50'>
               <form onSubmit={onSubmit}>
-                <h3 className='card-title text-center mb-2'>Loan Management</h3>
+                <h3 className='card-title text-center mb-2'>BCC Loan Management</h3>
                 <h5 className='card-title text-center my-2'>Login</h5>
                 <div className='mb-3'>
-                  <h6>Email</h6>
+                  <h6>Name</h6>
                   <input
-                    type='email'
+                    type='text'
                     className='form-control'
-                    onChange={(e) => setUser({ ...user, email: e.target.value })}
+                    onChange={(e) => setUser({ ...user, name: e.target.value })}
                   />
                 </div>
                 <div className='mb-3'>

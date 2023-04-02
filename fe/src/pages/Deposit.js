@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Page } from './Page';
 import { Breadcrumb } from 'react-bootstrap';
 import { apiRequest } from '../utils/apiRequest';
 
 export const Deposit = () => {
+  const [user, setUser] = useState({});
   const [saving, setSaving] = useState({
     amount: '',
     type: 'credit',
     id: null,
   });
+
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem('user') || {}));
+  }, []);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -17,13 +22,15 @@ export const Deposit = () => {
       .then((res) => {
         window.location.href = '/savings';
       })
-      .catch((e) => alert('Missing Fields'));
+      .catch((e) => alert('Something went wrong, please try again.'));
   };
 
   return (
     <Page title='Deposit'>
       <Breadcrumb>
-        <Breadcrumb.Item href='#'>Home</Breadcrumb.Item>
+        <Breadcrumb.Item href={user?.role === 'admin' ? '/admin/dashboard' : '/user/dashboard'}>
+          Home
+        </Breadcrumb.Item>
         <Breadcrumb.Item active>Deposit</Breadcrumb.Item>
       </Breadcrumb>
       <br />

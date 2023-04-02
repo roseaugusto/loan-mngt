@@ -36,7 +36,9 @@ export const UserRegularLoans = () => {
   return (
     <Page title='Regular Loans'>
       <Breadcrumb>
-        <Breadcrumb.Item href='#'>Home</Breadcrumb.Item>
+        <Breadcrumb.Item href={user?.role === 'admin' ? '/admin/dashboard' : '/user/dashboard'}>
+          Home
+        </Breadcrumb.Item>
         <Breadcrumb.Item active>Regular Loans</Breadcrumb.Item>
       </Breadcrumb>
       <br />

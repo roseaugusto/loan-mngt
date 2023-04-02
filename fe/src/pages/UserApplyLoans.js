@@ -11,6 +11,11 @@ export const UserApplyLoans = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (loan.type === 'petty') {
+      if (loan.loan_amount > 5000) {
+        alert('Petty Loans must not exceed 5000');
+      }
+    }
     await apiRequest
       .post('/loans', loan)
       .then((res) => {

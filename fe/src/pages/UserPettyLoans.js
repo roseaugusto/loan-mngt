@@ -36,7 +36,9 @@ export const UserPettyLoans = () => {
   return (
     <Page title='Petty Cash Loans'>
       <Breadcrumb>
-        <Breadcrumb.Item href='#'>Home</Breadcrumb.Item>
+        <Breadcrumb.Item href={user?.role === 'admin' ? '/admin/dashboard' : '/user/dashboard'}>
+          Home
+        </Breadcrumb.Item>
         <Breadcrumb.Item active>Petty Cash Loans</Breadcrumb.Item>
       </Breadcrumb>
       <br />

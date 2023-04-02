@@ -51,10 +51,14 @@ export const LoanPaymentsDownload = () => {
 
   return (
     <>
-      {' '}
+      <a href={`/user/loan-details/${id}`}>
+        <button className='btn btn-primary float-right' style={{ margin: '80px 80px 160px 10px' }}>
+          Back
+        </button>
+      </a>
       <button
         className='btn btn-primary float-right'
-        style={{ margin: '80px 160px' }}
+        style={{ margin: '80px 0px' }}
         onClick={() => generatePDF()}
       >
         Download
@@ -84,7 +88,7 @@ export const LoanPaymentsDownload = () => {
                 <td>{key.created_at}</td>
                 <td>{key.trans_code}</td>
                 <td>{key.statement.due_date}</td>
-                <td>Php {key.amount.toLocaleString()}</td>
+                <td className='text-right'>Php {key.amount.toLocaleString()}</td>
               </tr>
             ))}
 

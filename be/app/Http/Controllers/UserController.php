@@ -39,11 +39,11 @@ class UserController extends Controller
 
     public function login(Request $request) {
       $fields = $request->validate([
-        'email' => 'required',
+        'name' => 'required',
         'password' => 'required'
       ]);
 
-      $user = User::where('email', $fields['email'])->first();
+      $user = User::where('name', $fields['name'])->first();
 
       if(!$user || !Hash::check($fields['password'], $user->password)) {
         return response([
@@ -62,6 +62,22 @@ class UserController extends Controller
 
     public function showUsersbyRole($role) {
       return User::where('role', $role)->get();
+    }
+
+    public function showUser() {
+      return User::where('id', auth()->user()->id)->get();
+    }
+
+    public function updateUser(Request $request) {
+      $u = User::find(auth()->user()->id);
+      $u->name = $request->input('name');
+      $u->email = $request->input('email');
+      $u->contact = $request->input('contact');
+      $u->address = $request->input('address');
+      $u->birthdate = $request->input('birthdate');
+      $u->save();
+
+      return response('success');
     }
 
     public function logout(Request $request) {

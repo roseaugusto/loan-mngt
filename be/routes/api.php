@@ -26,9 +26,12 @@ Route::middleware('auth:sanctum')->group(function() {
   Route::patch('loans/{id}', [LoansController::class, 'update']);
   Route::patch('loans/pay/{id}', [LoansController::class, 'pay']);
   Route::get('dashboard', [LoansController::class, 'dashboard']);
+  Route::post('penalty/', [LoansController::class, 'penalty']);
   Route::post('logout/', [UserController::class, 'logout']);
   Route::get('savings/', [SavingsController::class, 'show']);
   Route::post('savings/', [SavingsController::class, 'store']);
   Route::get('users/{role}', [UserController::class, 'showUsersbyRole']);
+  Route::get('user/info', [UserController::class, 'showUser']);
+  Route::patch('user/update', [UserController::class, 'updateUser']);
 });
 

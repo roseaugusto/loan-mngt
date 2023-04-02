@@ -32,6 +32,21 @@ export const LoanDetailsDownload = () => {
     });
   };
 
+  const calculate = (type) => {
+    let sum = 0;
+    if (type === 'payments') {
+      loan.payments?.map((key) => {
+        sum = sum + key.amount;
+      });
+    } else {
+      loan.statements?.map((key) => {
+        sum = sum + key[type];
+      });
+    }
+
+    return sum;
+  };
+
   const generatePDF = async () => {
     html2canvas(exportRef.current).then((canvas) => {
       const imgWidth = 208;
@@ -59,10 +74,14 @@ export const LoanDetailsDownload = () => {
 
   return (
     <>
-      {' '}
+      <a href={`/user/loan-details/${id}`}>
+        <button className='btn btn-primary float-right' style={{ margin: '80px 80px 160px 10px' }}>
+          Back
+        </button>
+      </a>
       <button
         className='btn btn-primary float-right'
-        style={{ margin: '80px 160px' }}
+        style={{ margin: '80px 0px' }}
         onClick={() => generatePDF()}
       >
         Download
@@ -84,7 +103,7 @@ export const LoanDetailsDownload = () => {
             <tr>
               <th>Applicable Month</th>
               <th>Due Date</th>
-              <th colSpan={3}>Amount</th>
+              <th colSpan={4}>Amount</th>
               <th>Outstanding Principal Balance</th>
               <th>Status</th>
             </tr>
@@ -94,11 +113,12 @@ export const LoanDetailsDownload = () => {
               <th>Amortization</th>
               <th>Interest</th>
               <th>Principal</th>
+              <th>Penalty</th>
               <th />
               <th />
             </tr>
             <tr>
-              <th colSpan={5} />
+              <th colSpan={6} />
               <th>Php {loan.loan_amount?.toLocaleString()}</th>
               <th />
             </tr>
@@ -111,15 +131,17 @@ export const LoanDetailsDownload = () => {
                 <td>Php {key.amortization.toLocaleString()}</td>
                 <td>Php {key.interest.toLocaleString()}</td>
                 <td>Php {key.principal.toLocaleString()}</td>
+                <td>Php {key.penalty?.toLocaleString() || 0}</td>
                 <td>Php {key.outstanding.toLocaleString()}</td>
                 <td>{key.status}</td>
               </tr>
             ))}
             <tr>
               <th colSpan={2}>Total</th>
-              <th>Php {totals.amortization.toLocaleString()}</th>
-              <th>Php {totals.interest.toLocaleString()}</th>
-              <th>Php {totals.principal.toLocaleString()}</th>
+              <th>Php {calculate('amortization').toLocaleString()}</th>
+              <th>Php {calculate('interest').toLocaleString()}</th>
+              <th>Php {calculate('principal').toLocaleString()}</th>
+              <th>Php {calculate('penalty').toLocaleString()}</th>
               <th colSpan={3} />
             </tr>
           </tbody>

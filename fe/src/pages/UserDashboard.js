@@ -19,13 +19,9 @@ export const UserDashboard = () => {
   }, []);
   return (
     <Page title='Member Dashboard'>
-      <Breadcrumb>
-        <Breadcrumb.Item active>Home</Breadcrumb.Item>
-      </Breadcrumb>
-      <br />
       <Card>
         <Card.Body>
-          <Card.Title>Pending Loans for Approvals</Card.Title>
+          <Card.Title>Due Loans for Today</Card.Title>
           <ListGroup as='ol' numbered>
             {data.dues?.length > 0 ? (
               data.dues?.map((key, index) => (

@@ -16,6 +16,7 @@ import { Deposit } from './pages/Deposit';
 import { Savings } from './pages/Savings';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { MembersInfo } from './pages/MembersInfo';
 
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -30,6 +31,7 @@ root.render(
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/user/dashboard' element={<UserDashboard />} />
+        <Route path='/user/info' element={<MembersInfo />} />
         <Route path='/user/regular-loan' element={<UserRegularLoans />} />
         <Route path='/user/petty-loan' element={<UserPettyLoans />} />
         <Route path='/user/apply-loan/' element={<UserApplyLoans />} />

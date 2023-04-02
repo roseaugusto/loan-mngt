@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Page } from './Page';
-import { Breadcrumb, Container, Row, Col } from 'react-bootstrap';
+import { Breadcrumb } from 'react-bootstrap';
 import { apiRequest } from '../utils/apiRequest';
 
 export const Withdraw = () => {
+  const [user, setUser] = useState({});
   const [saving, setSaving] = useState({
     amount: '',
     type: 'debit',
     id: null,
   });
+
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem('user') || {}));
+  }, []);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -18,20 +23,22 @@ export const Withdraw = () => {
         window.location.href = '/savings';
       })
       .catch((e) =>
-        e.response.data
+        e.response.data.error
           ? alert(e.response.data.error + '\n' + 'Balance is only ' + e.response.data.balance)
-          : alert('error'),
+          : alert('Something went wrong, please try again.'),
       );
   };
 
   return (
     <Page title='Withdraw'>
       <Breadcrumb>
-        <Breadcrumb.Item href='#'>Home</Breadcrumb.Item>
+        <Breadcrumb.Item href={user?.role === 'admin' ? '/admin/dashboard' : '/user/dashboard'}>
+          Home
+        </Breadcrumb.Item>
         <Breadcrumb.Item active>Withdraw</Breadcrumb.Item>
       </Breadcrumb>
       <form onSubmit={onSubmit}>
-        <h3 className='card-title text-center my-2'>Widthraw</h3>
+        <h3 className='card-title text-center my-2'>Withdraw</h3>
         <div className='mb-3'>
           <h6>Member ID</h6>
           <input

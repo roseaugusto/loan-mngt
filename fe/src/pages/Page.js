@@ -23,21 +23,40 @@ export const Page = ({ children, title = '' }) => {
     });
   };
 
+  const penalty = async () => {
+    await apiRequest.post('penalty', {}).catch((e) => console.log(e));
+  };
+
   useEffect(() => {
     fetchUserData();
+    penalty();
   }, []);
   return (
     <>
-      <Navbar bg='light' expand='lg' className='shadow'>
+      <Navbar
+        expand='lg'
+        variant='dark'
+        className='shadow text-white'
+        style={{ backgroundColor: '#6778ee' }}
+      >
         <Container fluid>
-          <Navbar.Brand href='/'>Loan Management</Navbar.Brand>
+          <Navbar.Brand href={user?.role === 'admin' ? '/admin/dashboard' : '/user/dashboard'}>
+            <img
+              src='/logo.jpeg'
+              width='30'
+              height='30'
+              className='d-inline-block align-top'
+              alt='React Bootstrap logo'
+            />{' '}
+            BCC Loan Management
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls='navbarScroll' />
           <Navbar.Collapse id='navbarScroll'>
             <Nav className='me-auto my-2 my-lg-0' style={{ maxHeight: '100px' }} navbarScroll>
               <Nav.Link href={user?.role === 'admin' ? '/admin/dashboard' : '/user/dashboard'}>
                 Home
               </Nav.Link>
-              <Nav.Link href='#action2'>Member Info</Nav.Link>
+              <Nav.Link href='/user/info'>Member Info</Nav.Link>
 
               <NavDropdown title='CBU' id='navbarScrollingDropdown'>
                 <NavDropdown.Item href='/savings'>Savings</NavDropdown.Item>
@@ -67,15 +86,15 @@ export const Page = ({ children, title = '' }) => {
               style={{ cursor: 'pointer' }}
               onClick={() => logout()}
             >
-              &#9212; Logout
+              <b>&#9212; Logout</b>
             </Navbar.Text>
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      <Container className='p-5 bg-light my-4'>
+      <div className='bg-light' style={{ padding: '30px 120px', margin: '60px 180px' }}>
         <h3>{title}</h3>
         {children}
-      </Container>
+      </div>
     </>
   );
 };
