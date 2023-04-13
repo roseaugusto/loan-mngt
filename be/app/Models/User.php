@@ -50,10 +50,10 @@ class User extends Authenticatable
     ];
 
     public function loans() {
-      return $this->hasMany(Loans::class, 'user_id');
+      return $this->hasMany(Loans::class, 'user_id')->orderBy('id', 'desc');;
     }
 
     public function savings() {
-      return $this->hasMany(Savings::class, 'user_id');
+      return $this->hasMany(Savings::class, 'user_id')->orderBy('id', 'desc');
     }
 }

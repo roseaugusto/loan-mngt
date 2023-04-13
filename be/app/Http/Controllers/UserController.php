@@ -61,7 +61,7 @@ class UserController extends Controller
     }
 
     public function showUsersbyRole($role) {
-      return User::where('role', $role)->get();
+      return User::with('savings')->where('role', $role)->get();
     }
 
     public function showUser() {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Page } from './Page';
-import { Breadcrumb, ListGroup, Card, Col, Row } from 'react-bootstrap';
+import { Breadcrumb, ListGroup, Card, Col, Row, Table } from 'react-bootstrap';
 import { apiRequest } from '../utils/apiRequest';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -37,11 +37,16 @@ ChartJS.register(
 
 export const AdminDashboard = () => {
   const [user, setUser] = useState({});
+  const [users, setUsers] = useState([]);
   const [data, setData] = useState([]);
 
   const fetchData = async () => {
     await apiRequest.get(`/dashboard`).then((res) => {
       setData(res.data);
+    });
+
+    await apiRequest.get('users/member').then((res) => {
+      setUsers(res.data);
     });
   };
 
@@ -218,6 +223,36 @@ export const AdminDashboard = () => {
               </ListGroup.Item>
             )}
           </ListGroup>
+        </Card.Body>
+      </Card>
+      <br />
+      <Card>
+        <Card.Body>
+          <Card.Title>Member List</Card.Title>
+          <Table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>CBU</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Birthdate</th>
+                <th>Contact</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.name}</td>
+                  <td>PHP {item.savings[0]?.balance.toLocaleString()}</td>
+                  <td>{item.email}</td>
+                  <td>{item.address}</td>
+                  <td>{item.birthdate}</td>
+                  <td>{item.contact}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         </Card.Body>
       </Card>
     </Page>

@@ -302,15 +302,20 @@ class LoansController extends Controller
       //   $query->whereDate('due_date', '<', date('y-m-d'))->where('status', 'to pay');
       // })
       $d1 = [];
+      $d2 = [];
       foreach($dues as $d) {
         foreach($d['statements'] as $statement) {
           if ($statement['status'] === 'to pay') {
+            $d2[] = $statement;
             if (is_null($statement['penalty_updated']) || strtotime($statement['penalty_updated']) < strtotime(date('y-m-d'))) {
+              
               if (strtotime($statement['due_date']) < strtotime(date('y-m-d'))){
+                
                 $days = round(abs(strtotime(date('y-m-d')) - strtotime($statement['due_date'])) / 86400);
                 $months = (date('Y', strtotime(date('y-m-d'))) - date('Y', strtotime($statement['due_date']))) * 12;
                 $months += date('m', strtotime(date('y-m-d'))) - date('m', strtotime($statement['due_date']));
-                $penalty = $statement['principal'] * $months * 0.05;
+                $x = $days <= 30 ? 1 : $months;
+                $penalty = $statement['principal'] * $x * 0.05;
                 $s = LoanStatements::find($statement['id']);
                 $s->penalty = $penalty;
                 $s->penalty_updated = date('y-m-d');
@@ -322,6 +327,8 @@ class LoansController extends Controller
                 } else {
                   $loan_penalty_total = $d['penalty_amount'];
                 }
+
+
 
                 $d1[] = $s;
               }
