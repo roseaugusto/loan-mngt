@@ -77,10 +77,14 @@ export const AdminDashboard = () => {
   };
 
   const calculate = (type) => {
-    let diff = data[type]?.latest - data[type]?.previous;
-    let total = data[type]?.latest + data[type]?.previous;
+    if (data[type]?.latest > 0) {
+      let diff = data[type]?.latest - data[type]?.previous;
+      let total = data[type]?.latest + data[type]?.previous;
 
-    return (diff / total) * 100;
+      return (diff / total) * 100;
+    }
+
+    return 0;
   };
 
   useEffect(() => {

@@ -49,8 +49,8 @@ class LoansController extends Controller
      $loan_latest = Loans::where('type', 'regular')->whereYear('created_at', date('Y'))->sum('loan_amount');
      $loan_lastyear = Loans::where('type', 'regular')->whereYear('created_at', $last_year)->sum('loan_amount');
      
-     $user_latest = User::whereYear('created_at', date('Y'))->count();
-     $user_lastyear = User::whereYear('created_at', $last_year)->count();
+     $user_latest = User::where('role', 'member')->whereYear('created_at', date('Y'))->count();
+     $user_lastyear = User::where('role', 'member')->whereYear('created_at', $last_year)->count();
 
      $payment_latest = Payments::whereYear('created_at', date('Y'))->sum('amount');
      $payment_lastyear = Payments::whereYear('created_at', $last_year)->sum('amount');
