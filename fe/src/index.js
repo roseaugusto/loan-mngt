@@ -17,6 +17,9 @@ import { Savings } from './pages/Savings';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { MembersInfo } from './pages/MembersInfo';
+import { IncomeStatement } from './pages/IncomeStatement';
+import { CashFlow } from './pages/CashFlow';
+import { FinancialStatement } from './pages/FinancialStatement';
 
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -45,6 +48,10 @@ root.render(
         <Route path='/deposit' element={<Deposit />} />
         <Route path='/savings' element={<Savings />} />
         <Route path='/savings/download' element={<SavingsDownload />} />
+
+        <Route path='/income-statement' element={<IncomeStatement />} />
+        <Route path='/cash-flow' element={<CashFlow />} />
+        <Route path='/financial-statement' element={<FinancialStatement />} />
       </Routes>
     </Router>
   </React.StrictMode>,

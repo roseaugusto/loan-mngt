@@ -75,6 +75,14 @@ export const Page = ({ children, title = '' }) => {
                 <NavDropdown.Item href='/user/regular-loan'>Regular Loan</NavDropdown.Item>
                 <NavDropdown.Item href='/user/petty-loan'>Petty Cash</NavDropdown.Item>
               </NavDropdown>
+              <Nav.Link href=''>Journals</Nav.Link>
+              <NavDropdown title='Reports' id='navbarScrollingDropdown'>
+                <NavDropdown.Item href='/income-statement'>Income Statement</NavDropdown.Item>
+                <NavDropdown.Item href='/cash-flow'>Cash Flow</NavDropdown.Item>
+                <NavDropdown.Item href='/financial-statement'>
+                  Statement of Financial
+                </NavDropdown.Item>
+              </NavDropdown>
             </Nav>
           </Navbar.Collapse>
           <Navbar.Collapse className='justify-content-end'>

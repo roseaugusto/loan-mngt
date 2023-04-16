@@ -97,7 +97,7 @@ export const AdminDashboard = () => {
               <Card.Text>
                 <div className='d-flex align-items-center justify-content-between'>
                   <div>
-                    <h5>0.00</h5>
+                    <h5>Php {data?.cbu?.latest.toLocaleString()}</h5>
                     <div
                       className={`mt-4 ${calculate('cbu') < 0 ? 'text-danger' : 'text-success'}`}
                     >
@@ -121,7 +121,7 @@ export const AdminDashboard = () => {
               <Card.Text>
                 <div className='d-flex align-items-center justify-content-between'>
                   <div>
-                    <h5>0.00</h5>
+                    <h5>Php {data?.loan?.latest.toLocaleString()}</h5>
                     <div
                       className={`mt-4 ${calculate('loan') < 0 ? 'text-danger' : 'text-success'}`}
                     >
@@ -145,7 +145,7 @@ export const AdminDashboard = () => {
               <Card.Text>
                 <div className='d-flex align-items-center justify-content-between'>
                   <div>
-                    <h5>0.00</h5>
+                    <h5>{data?.user?.latest.toLocaleString()}</h5>
                     <div
                       className={`mt-4 ${calculate('user') < 0 ? 'text-danger' : 'text-success'}`}
                     >
@@ -169,7 +169,7 @@ export const AdminDashboard = () => {
               <Card.Text>
                 <div className='d-flex align-items-center justify-content-between'>
                   <div>
-                    <h5>0.00</h5>
+                    <h5>Php {data?.payment?.latest.toLocaleString()}</h5>
                     <div
                       className={`mt-4 ${
                         calculate('payment') < 0 ? 'text-danger' : 'text-success'
@@ -244,7 +244,9 @@ export const AdminDashboard = () => {
               {users.map((item, index) => (
                 <tr key={index}>
                   <td>{item.name}</td>
-                  <td>PHP {item.savings[0]?.balance.toLocaleString()}</td>
+                  <td>
+                    {item.savings[0] ? `PHP ${item.savings[0]?.balance.toLocaleString()}` : '-'}
+                  </td>
                   <td>{item.email}</td>
                   <td>{item.address}</td>
                   <td>{item.birthdate}</td>

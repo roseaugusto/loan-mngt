@@ -21,20 +21,25 @@ class LoansController extends Controller
      $type = request()->query('type');
 
       if($type) {
-        $loans = Loans::with('user')->where('type', $type)->get();
+        $loans = Loans::with('user')->where('type', $type);
       } else {
-        $loans = Loans::with('user')->get();
+        $loans = Loans::with('user');
       }
 
-      return response($loans);
+      if(auth()->user()->role === 'member') {
+        $loans = $loans->where('user_id', auth()->user()->id);
+      }
+
+
+      return response($loans->get());
     }
 
     public function dashboard(Request $request)
     {
      $pendingLoans = Loans::with('user')->where('status', 'pending')->orderBy('id', 'desc')->get();
      $dueLoans = Loans::with('user')->whereHas('statements', function($query) {
-      $query->where('due_date', Carbon::today());
-     })->where('id', auth()->user()->id)->orderBy('id', 'desc')->get();
+      $query->where('due_date', date('Y-m-d'));
+     })->where('user_id', auth()->user()->id)->orderBy('id', 'desc')->get();
 
      $last_year = date('Y', strtotime('-1 year'));
 
@@ -190,16 +195,32 @@ class LoansController extends Controller
   
           // ang original loan - principal
           $outstanding = $outstanding - $principal;
+
+          $half_amortization = ($amortization / 2);
+          $half_interestPerMonth = ($interestPerMonth / 2);
+          $half_principal = ($principal / 2);
+          $half_outstanding = ($outstanding / 2);
+
+          LoanStatements::create([
+            'loan_id' => $loan->id,
+            'month' =>  date('m', strtotime('-1 month', strtotime($duedate))),
+            'due_date' => date('Y-m-d', strtotime('-15 days', strtotime($duedate))),
+            'amortization' => $half_amortization,
+            'interest' => $half_interestPerMonth,
+            'principal' => $half_principal,
+            'outstanding' => $half_outstanding,
+            'ls_code' => $lsCode.'1',
+          ]);
   
           LoanStatements::create([
             'loan_id' => $loan->id,
             'month' =>  date('m', strtotime('-1 month', strtotime($duedate))),
             'due_date' => $duedate,
-            'amortization' => $amortization,
-            'interest' => $interestPerMonth,
-            'principal' => $principal,
-            'outstanding' => $outstanding,
-            'ls_code' => $lsCode,
+            'amortization' => $half_amortization,
+            'interest' => $half_interestPerMonth,
+            'principal' => $half_principal,
+            'outstanding' => $half_outstanding,
+            'ls_code' => $lsCode.'2',
           ]);
         }
       } else {
@@ -317,9 +338,24 @@ class LoansController extends Controller
                 $x = $days <= 30 ? 1 : $months;
                 $penalty = $statement['principal'] * $x * 0.05;
                 $s = LoanStatements::find($statement['id']);
+                $s_lscode = substr($s->ls_code, -1);
+
                 $s->penalty = $penalty;
+                // $half_penalty = $penalty / 2;
+
+                // if($s_lscode === '1') {
+                //   $otherStatementCode = substr_replace($s->ls_code, '2', -1);
+                //   $otherStatement = LoanStatements::where('ls_code', $otherStatementCode)->first();
+                //   $otherStatement->penalty = $half_penalty;
+                //   $otherStatement->penalty_updated = date('y-m-d');
+                //   $otherStatement->save();
+
+                //   $s->penalty = $half_penalty;
+                // }
+
                 $s->penalty_updated = date('y-m-d');
                 $s->save();
+                
 
                 $loan_penalty_total = 0;
                 if($d['penalty_amount']) {
