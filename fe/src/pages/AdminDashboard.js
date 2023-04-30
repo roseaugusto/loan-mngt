@@ -101,7 +101,7 @@ export const AdminDashboard = () => {
               <Card.Text>
                 <div className='d-flex align-items-center justify-content-between'>
                   <div>
-                    <h5>Php {data?.cbu?.latest.toLocaleString()}</h5>
+                    <h5> {data?.cbu?.latest.toLocaleString()}</h5>
                     <div
                       className={`mt-4 ${calculate('cbu') < 0 ? 'text-danger' : 'text-success'}`}
                     >
@@ -125,7 +125,7 @@ export const AdminDashboard = () => {
               <Card.Text>
                 <div className='d-flex align-items-center justify-content-between'>
                   <div>
-                    <h5>Php {data?.loan?.latest.toLocaleString()}</h5>
+                    <h5> {data?.loan?.latest.toLocaleString()}</h5>
                     <div
                       className={`mt-4 ${calculate('loan') < 0 ? 'text-danger' : 'text-success'}`}
                     >
@@ -173,7 +173,7 @@ export const AdminDashboard = () => {
               <Card.Text>
                 <div className='d-flex align-items-center justify-content-between'>
                   <div>
-                    <h5>Php {data?.payment?.latest.toLocaleString()}</h5>
+                    <h5> {data?.payment?.latest.toLocaleString()}</h5>
                     <div
                       className={`mt-4 ${
                         calculate('payment') < 0 ? 'text-danger' : 'text-success'

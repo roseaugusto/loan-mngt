@@ -174,70 +174,70 @@ class LoansController extends Controller
 
       $lastLsCount = LoanStatements::count();
 
-      if($fields['type'] === 'regular') { 
-        for($i=1; $i<=$numberOfMonths; $i++) {
-          $duedate = date('Y-m-d', strtotime('+'.($i*15).' days', $todaydate));
+      // if($fields['type'] === 'regular') { 
+      //   for($i=1; $i<=$numberOfMonths; $i++) {
+      //     $duedate = date('Y-m-d', strtotime('+'.($i*15).' days', $todaydate));
 
-          if ($i == 1) {
-            $outstanding = $fields['loan_amount'];
-          } else {
-            $principal = $outstanding;
-          }
+      //     if ($i == 1) {
+      //       $outstanding = $fields['loan_amount'];
+      //     } else {
+      //       $principal = $outstanding;
+      //     }
   
-          $lsCode =  $i == 1 ? "LS".date("ymd").$lastLsCount + 1 : "LS".date("ymd").$lastLsCount + $i;
+      //     $lsCode =  $i == 1 ? "LS".date("ymd").$lastLsCount + 1 : "LS".date("ymd").$lastLsCount + $i;
           
-          // interest / 600
-          $interestPerMonth = $outstanding * $rate;
+      //     // interest / 600
+      //     $interestPerMonth = $outstanding * $rate;
 
-          $usefullLife = (1 - (pow((1+($rate/$numberOfMonths)), ($numberOfMonths * -1))));
+      //     $usefullLife = (1 - (pow((1+($rate/$numberOfMonths)), ($numberOfMonths * -1))));
   
-          // monthly / 2666.67
-          $amortization = $semiMonthlyPrincipal + $interestPerMonth;
+      //     // monthly / 2666.67
+      //     $amortization = $semiMonthlyPrincipal + $interestPerMonth;
   
-          // ang loan jud / 1666.67 (fixed)
-          $principal = $semiMonthlyPrincipal;
+      //     // ang loan jud / 1666.67 (fixed)
+      //     $principal = $semiMonthlyPrincipal;
   
-          // ang original loan - principal / 40000
-          $outstanding = $outstanding - $principal;
+      //     // ang original loan - principal / 40000
+      //     $outstanding = $outstanding - $principal;
 
-          LoanStatements::create([
-            'loan_id' => $loan->id,
-            'month' =>  date('m', strtotime('-1 month', strtotime($duedate))),
-            'due_date' => $duedate,
-            'amortization' => $amortization,
-            'interest' => $interestPerMonth,
-            'principal' => $principal,
-            'outstanding' => $outstanding,
-            'ls_code' => $lsCode.'1',
-          ]);
-        }
-      } else {
-        $principal = $fields['loan_amount'];
-        $interest = $fields['loan_amount'] * 0.05;
+      //     LoanStatements::create([
+      //       'loan_id' => $loan->id,
+      //       'month' =>  date('m', strtotime('-1 month', strtotime($duedate))),
+      //       'due_date' => $duedate,
+      //       'amortization' => $amortization,
+      //       'interest' => $interestPerMonth,
+      //       'principal' => $principal,
+      //       'outstanding' => $outstanding,
+      //       'ls_code' => $lsCode.'1',
+      //     ]);
+      //   }
+      // } else {
+      //   $principal = $fields['loan_amount'];
+      //   $interest = $fields['loan_amount'] * 0.05;
 
-        LoanStatements::create([
-          'loan_id' => $loan->id,
-          'month' =>  date('m', strtotime('-1 month', $todaydate)),
-          'due_date' => date('Y-m-d', strtotime('+1 month', $todaydate)),
-          'amortization' => $interest,
-          'interest' => $interest,
-          'principal' => $principal,
-          'outstanding' => $interest + $principal,
-          'ls_code' => "LS".date("ymd").$lastLsCount + 1,
-        ]);
+      //   LoanStatements::create([
+      //     'loan_id' => $loan->id,
+      //     'month' =>  date('m', strtotime('-1 month', $todaydate)),
+      //     'due_date' => date('Y-m-d', strtotime('+1 month', $todaydate)),
+      //     'amortization' => $interest,
+      //     'interest' => $interest,
+      //     'principal' => $principal,
+      //     'outstanding' => $interest + $principal,
+      //     'ls_code' => "LS".date("ymd").$lastLsCount + 1,
+      //   ]);
 
-        LoanStatements::create([
-          'loan_id' => $loan->id,
-          'month' =>  date('m', strtotime('-1 month', strtotime($todaydate))),
-          'due_date' => date('Y-m-d', strtotime('+1 month', $todaydate)),
-          'amortization' => $principal,
-          'interest' => 0,
-          'principal' => $principal,
-          'outstanding' => 0,
-          'ls_code' => "LS".date("ymd").$lastLsCount + 2,
-        ]);
+      //   LoanStatements::create([
+      //     'loan_id' => $loan->id,
+      //     'month' =>  date('m', strtotime('-1 month', strtotime($todaydate))),
+      //     'due_date' => date('Y-m-d', strtotime('+1 month', $todaydate)),
+      //     'amortization' => $principal,
+      //     'interest' => 0,
+      //     'principal' => $principal,
+      //     'outstanding' => 0,
+      //     'ls_code' => "LS".date("ymd").$lastLsCount + 2,
+      //   ]);
         
-      }
+      // }
 
       response($loan, 201);
     }
@@ -271,6 +271,79 @@ class LoansController extends Controller
       $loan = Loans::findOrFail($id);
       $loan->status = $fields['status'];
       $loan->save();
+
+      if ($fields['status'] === 'approved') {
+        $todaydate = strtotime(date("Y/m/d"));
+        $rate = 0.015;
+        $numberOfMonths = $loan->months_to_pay * 2;
+        $semiMonthlyPrincipal = $loan->loan_amount / $numberOfMonths;
+        $lastLsCount = LoanStatements::count();
+
+        if($loan->type === 'regular') { 
+          for($i=1; $i<=$numberOfMonths; $i++) {
+            $duedate = date('Y-m-d', strtotime('+'.($i*15).' days', $todaydate));
+  
+            if ($i == 1) {
+              $outstanding = $loan->loan_amount;
+            } else {
+              $principal = $outstanding;
+            }
+    
+            $lsCode =  $i == 1 ? "LS".date("ymd").$lastLsCount + 1 : "LS".date("ymd").$lastLsCount + $i;
+            
+            // interest / 600
+            $interestPerMonth = $outstanding * $rate;
+  
+            $usefullLife = (1 - (pow((1+($rate/$numberOfMonths)), ($numberOfMonths * -1))));
+    
+            // monthly / 2666.67
+            $amortization = $semiMonthlyPrincipal + $interestPerMonth;
+    
+            // ang loan jud / 1666.67 (fixed)
+            $principal = $semiMonthlyPrincipal;
+    
+            // ang original loan - principal / 40000
+            $outstanding = $outstanding - $principal;
+  
+            LoanStatements::create([
+              'loan_id' => $loan->id,
+              'month' =>  date('m', strtotime('-1 month', strtotime($duedate))),
+              'due_date' => $duedate,
+              'amortization' => $amortization,
+              'interest' => $interestPerMonth,
+              'principal' => $principal,
+              'outstanding' => $outstanding,
+              'ls_code' => $lsCode.'1',
+            ]);
+          }
+        } else {
+          $principal =$loan->loan_amount;
+          $interest = ($loan->loan_amount * 0.05) / 2;
+  
+          LoanStatements::create([
+            'loan_id' => $loan->id,
+            'month' =>  date('m', strtotime('-1 month', $todaydate)),
+            'due_date' => date('Y-m-d', strtotime('+1 month', $todaydate)),
+            'amortization' => $interest,
+            'interest' => $interest,
+            'principal' => $principal,
+            'outstanding' => $interest + $principal,
+            'ls_code' => "LS".date("ymd").$lastLsCount + 1,
+          ]);
+  
+          LoanStatements::create([
+            'loan_id' => $loan->id,
+            'month' =>  date('m', strtotime('-1 month', strtotime($todaydate))),
+            'due_date' => date('Y-m-d', strtotime('+1 month', $todaydate)),
+            'amortization' => $principal,
+            'interest' => 0,
+            'principal' => $principal,
+            'outstanding' => 0,
+            'ls_code' => "LS".date("ymd").$lastLsCount + 2,
+          ]);
+          
+        }
+      }
     }
 
     public function pay(Request $request, string $id)
@@ -344,7 +417,6 @@ class LoansController extends Controller
 
                 $s->penalty_updated = date('y-m-d');
                 $s->save();
-                
 
                 $loan_penalty_total = 0;
                 if($d['penalty_amount']) {
@@ -352,8 +424,6 @@ class LoansController extends Controller
                 } else {
                   $loan_penalty_total = $d['penalty_amount'];
                 }
-
-
 
                 $d1[] = $s;
               }

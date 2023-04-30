@@ -8,7 +8,7 @@ export const Withdraw = () => {
   const [saving, setSaving] = useState({
     amount: '',
     type: 'debit',
-    id: null,
+    name: null,
   });
 
   useEffect(() => {
@@ -40,12 +40,11 @@ export const Withdraw = () => {
       <form onSubmit={onSubmit}>
         <h3 className='card-title text-center my-2'>Withdraw</h3>
         <div className='mb-3'>
-          <h6>Member ID</h6>
+          <h6>Member Name</h6>
           <input
-            type='number'
+            type='text'
             className='form-control'
-            pattern='^[0-9,]*$'
-            onChange={(e) => setSaving({ ...saving, id: e.target.value })}
+            onChange={(e) => setSaving({ ...saving, name: e.target.value })}
             required
           />
         </div>

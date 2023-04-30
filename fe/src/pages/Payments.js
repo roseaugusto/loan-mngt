@@ -16,14 +16,14 @@ export const Payments = ({ payments = [], total = 0 }) => {
             <td>{key.created_at}</td>
             <td>{key.trans_code}</td>
             <td>{key.statement.due_date}</td>
-            <td>Php {key.amount.toLocaleString()}</td>
+            <td> {key.amount.toLocaleString()}</td>
           </tr>
         ))}
 
         <tr>
           <th>Total</th>
           <th colSpan={3} className='text-right'>
-            Php {total.toLocaleString()}
+            {total.toLocaleString()}
           </th>
         </tr>
       </thead>

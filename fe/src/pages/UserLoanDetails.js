@@ -137,22 +137,33 @@ export const UserLoanDetails = () => {
             {loan.code}
           </Col>
           <Col className='text-right'>
-            <b>Loan Type:</b> {loan.type}
+            <b>Loan Type: </b> {loan.type}
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <b>Date Applied: </b>
+            {DateTime.fromISO(loan.created_at).toFormat('yyyy-MM-dd')}
+          </Col>
+          <Col className='text-right'>
+            <b>Status:</b> {loan.status}
           </Col>
         </Row>
       </Container>
       <br />
-      <a
-        href={
-          tabKey === 'details'
-            ? `/user/loan-details/${id}/download`
-            : `/user/loan-payments/${id}/download`
-        }
-        target='_blank'
-        rel='noreferrer'
-      >
-        <button className='btn btn-primary float-right'>Generate Report</button>
-      </a>
+      {loan.status === 'approved' ? (
+        <a
+          href={
+            tabKey === 'details'
+              ? `/user/loan-details/${id}/download`
+              : `/user/loan-payments/${id}/download`
+          }
+          target='_blank'
+          rel='noreferrer'
+        >
+          <button className='btn btn-primary float-right'>Generate Report</button>
+        </a>
+      ) : null}
       <Tabs
         id='controlled-tab-example'
         activeKey={tabKey}
@@ -161,82 +172,86 @@ export const UserLoanDetails = () => {
       >
         <Tab eventKey='details' title='Details'>
           <div>
-            <Table striped bordered hover size='sm' className='text-center'>
-              <thead>
-                <tr>
-                  <th>Applicable Month</th>
-                  <th>Due Date</th>
-                  <th colSpan={6}>Amount</th>
-                  <th>Outstanding Principal Balance</th>
-                  <th>Status</th>
-                  {user?.role === 'admin' ? <th>Actions</th> : null}
-                </tr>
-                <tr>
-                  <th />
-                  <th />
-                  <th>Principal</th>
-                  <th>Interest</th>
-                  <th>Amortization</th>
-                  <th>Semi Gross Interest</th>
-                  <th>Semi Monthly Amortization</th>
-                  <th>Penalty</th>
-                  <th />
-                  <th />
-                  <th />
-                </tr>
-                <tr>
-                  <th colSpan={8} />
-                  <th> {loan.loan_amount?.toLocaleString()}</th>
-                  <th />
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
-                {loan.statements?.map((key, index) => (
-                  <tr key={index}>
-                    <td>{key.month}</td>
-                    <td>{key.due_date}</td>
-                    <td> {key.principal.toLocaleString()}</td>
-                    <td> {key.interest.toLocaleString()}</td>
-                    <td> {key.amortization.toLocaleString()}</td>
-                    <td>{(calculate('interest') / (loan.months_to_pay * 2)).toLocaleString()}</td>
-                    <td>
-                      {(calculate('amortization') / (loan.months_to_pay * 2))
-                        .toFixed(2)
-                        .toLocaleString()}
-                    </td>
-                    <td> {key.penalty?.toLocaleString() || 0}</td>
-                    <td> {key.outstanding.toLocaleString()}</td>
-                    <td>
-                      <Badge bg={getStatus(key.status)} className='text-white px-4'>
-                        {key.status}
-                      </Badge>
-                    </td>
-                    {user?.role === 'admin' ? (
-                      <td>
-                        {loan.status === 'approved' && checkInterestButton(loan.type, index) ? (
-                          <button className='btn btn-success btn-sm' onClick={() => pay(key.id)}>
-                            PAY
-                          </button>
-                        ) : (
-                          '-'
-                        )}
-                      </td>
-                    ) : null}
+            {loan.status === 'approved' ? (
+              <Table striped bordered hover size='sm' className='text-center'>
+                <thead>
+                  <tr>
+                    <th>Applicable Month</th>
+                    <th>Due Date</th>
+                    <th colSpan={6}>Amount</th>
+                    <th>Outstanding Principal Balance</th>
+                    <th>Status</th>
+                    {user?.role === 'admin' ? <th>Actions</th> : null}
                   </tr>
-                ))}
-                <tr>
-                  <th colSpan={2}>Total</th>
-                  <th> {calculate('principal').toLocaleString()}</th>
-                  <th> {calculate('interest').toLocaleString()}</th>
-                  <th> {calculate('amortization').toLocaleString()}</th>
-                  <th> {calculate('interest').toLocaleString()}</th>
-                  <th> {calculate('amortization').toLocaleString()}</th>
-                  <th> {calculate('penalty').toLocaleString()}</th>
-                  <th colSpan={3} />
-                </tr>
-              </tbody>
-            </Table>
+                  <tr>
+                    <th />
+                    <th />
+                    <th>Principal</th>
+                    <th>Interest</th>
+                    <th>Amortization</th>
+                    <th>Semi Gross Interest</th>
+                    <th>Semi Monthly Amortization</th>
+                    <th>Penalty</th>
+                    <th />
+                    <th />
+                    <th />
+                  </tr>
+                  <tr>
+                    <th colSpan={8} />
+                    <th> {loan.loan_amount?.toLocaleString()}</th>
+                    <th />
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {loan.statements?.map((key, index) => (
+                    <tr key={index}>
+                      <td>{key.month}</td>
+                      <td>{key.due_date}</td>
+                      <td> {key.principal.toLocaleString()}</td>
+                      <td> {key.interest.toLocaleString()}</td>
+                      <td> {key.amortization.toLocaleString()}</td>
+                      <td>{(calculate('interest') / (loan.months_to_pay * 2)).toLocaleString()}</td>
+                      <td>
+                        {(calculate('amortization') / (loan.months_to_pay * 2))
+                          .toFixed(2)
+                          .toLocaleString()}
+                      </td>
+                      <td> {key.penalty?.toLocaleString() || 0}</td>
+                      <td> {key.outstanding.toLocaleString()}</td>
+                      <td>
+                        <Badge bg={getStatus(key.status)} className='text-white px-4'>
+                          {key.status}
+                        </Badge>
+                      </td>
+                      {user?.role === 'admin' ? (
+                        <td>
+                          {loan.status === 'approved' && checkInterestButton(loan.type, index) ? (
+                            <button className='btn btn-success btn-sm' onClick={() => pay(key.id)}>
+                              PAY
+                            </button>
+                          ) : (
+                            '-'
+                          )}
+                        </td>
+                      ) : null}
+                    </tr>
+                  ))}
+                  <tr>
+                    <th colSpan={2}>Total</th>
+                    <th> {calculate('principal').toLocaleString()}</th>
+                    <th> {calculate('interest').toLocaleString()}</th>
+                    <th> {calculate('amortization').toLocaleString()}</th>
+                    <th> {calculate('interest').toLocaleString()}</th>
+                    <th> {calculate('amortization').toLocaleString()}</th>
+                    <th> {calculate('penalty').toLocaleString()}</th>
+                    <th colSpan={3} />
+                  </tr>
+                </tbody>
+              </Table>
+            ) : (
+              <h6 className='text-center'>No details yet</h6>
+            )}
           </div>
         </Tab>
         <Tab eventKey='payments' title='Payments'>

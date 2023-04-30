@@ -100,10 +100,10 @@ export const SavingsDownload = () => {
                       <td>{key.user.name}</td>
                     </>
                   ) : null}
-                  <td>Php {key.balance.toLocaleString()}</td>
-                  <td>{key.type === 'debit' ? 'Php ' + key.amount.toLocaleString() : '-'}</td>
-                  <td>{key.type === 'credit' ? 'Php ' + key.amount.toLocaleString() : '-'}</td>
-                  {user?.role === 'member' ? <td>Php {key.balance.toLocaleString()}</td> : null}
+                  <td> {key.balance.toLocaleString()}</td>
+                  <td>{key.type === 'debit' ? key.amount.toLocaleString() : '-'}</td>
+                  <td>{key.type === 'credit' ? key.amount.toLocaleString() : '-'}</td>
+                  {user?.role === 'member' ? <td>{key.balance.toLocaleString()}</td> : null}
                 </tr>
               ))
             )}

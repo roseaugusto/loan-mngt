@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Savings;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -23,10 +24,12 @@ class SavingsController extends Controller
       $fields = $request->validate([
         'amount' => 'required',
         'type' => 'required',
-        'id' => 'required',
+        'name' => 'required',
       ]);
 
-      $latest = Savings::where('user_id', $fields['id'])->orderBy('id', 'desc')->first();
+      $user = User::where('name', $fields['name'])->first();
+
+      $latest = Savings::where('user_id', $user->id)->orderBy('id', 'desc')->first();
 
       if($latest) {
         if ($fields['type'] === 'credit') {
@@ -45,7 +48,7 @@ class SavingsController extends Controller
         $code = 'S'.date("ymd").$l;
 
         $s = Savings::create([
-          'user_id' => $fields['id'],
+          'user_id' => $user->id,
           'code' => $code,
           'type' => $fields['type'],
           'amount' => $fields['amount'],

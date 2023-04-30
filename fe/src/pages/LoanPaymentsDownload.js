@@ -71,7 +71,7 @@ export const LoanPaymentsDownload = () => {
           <h3>Credited Payments</h3>
         </div>
         <b>Name:</b> {loan.user?.name} <br />
-        <b>Amount Loan:</b> Php {loan.loan_amount?.toLocaleString()} <br />
+        <b>Amount Loan:</b> {loan.loan_amount?.toLocaleString()} <br />
         <b>Referrence Number:</b>
         {loan.code} <br />
         <b>Loan Type:</b> {loan.type} <br />
@@ -88,14 +88,14 @@ export const LoanPaymentsDownload = () => {
                 <td>{key.created_at}</td>
                 <td>{key.trans_code}</td>
                 <td>{key.statement.due_date}</td>
-                <td className='text-right'>Php {key.amount.toLocaleString()}</td>
+                <td className='text-right'> {key.amount.toLocaleString()}</td>
               </tr>
             ))}
 
             <tr>
               <th>Total</th>
               <th colSpan={3} className='text-right'>
-                Php {totals.toLocaleString()}
+                {totals.toLocaleString()}
               </th>
             </tr>
           </thead>
