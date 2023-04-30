@@ -344,6 +344,9 @@ class LoansController extends Controller
           
         }
       }
+
+      $loan->loan_amount = $request->input('amount');
+      $loan->save();
     }
 
     public function pay(Request $request, string $id)
