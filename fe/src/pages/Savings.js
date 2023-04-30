@@ -35,7 +35,7 @@ export const Savings = () => {
           </Col>
           <Col className='text-right'>
             {user?.role === 'member' ? (
-              <h4>Remaining Balance: {savings[0]?.balance.toLocaleString() || 0}</h4>
+              <h4>Total CBU: {savings[0]?.balance.toLocaleString() || 0}</h4>
             ) : null}
           </Col>
         </Row>

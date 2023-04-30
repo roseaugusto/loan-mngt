@@ -169,7 +169,7 @@ class LoansController extends Controller
 
       $todaydate = strtotime(date("Y/m/d"));
       $rate = 0.015;
-      $numberOfMonths = $request->input('months_to_pay') * 2;
+      $numberOfMonths = $request->input('months_to_pay');
       $semiMonthlyPrincipal = $fields['loan_amount'] / $numberOfMonths;
 
       $lastLsCount = LoanStatements::count();
@@ -275,8 +275,8 @@ class LoansController extends Controller
       if ($fields['status'] === 'approved') {
         $todaydate = strtotime(date("Y/m/d"));
         $rate = 0.015;
-        $numberOfMonths = $loan->months_to_pay * 2;
-        $semiMonthlyPrincipal = $loan->loan_amount / $numberOfMonths;
+        $numberOfMonths = $loan->months_to_pay;
+        $semiMonthlyPrincipal = $request->input('amount') / $numberOfMonths;
         $lastLsCount = LoanStatements::count();
 
         if($loan->type === 'regular') { 
@@ -284,11 +284,11 @@ class LoansController extends Controller
             $duedate = date('Y-m-d', strtotime('+'.($i*15).' days', $todaydate));
   
             if ($i == 1) {
-              $outstanding = $loan->loan_amount;
+              $outstanding = $request->input('amount');
             } else {
               $principal = $outstanding;
             }
-    
+
             $lsCode =  $i == 1 ? "LS".date("ymd").$lastLsCount + 1 : "LS".date("ymd").$lastLsCount + $i;
             
             // interest / 600
@@ -317,8 +317,8 @@ class LoansController extends Controller
             ]);
           }
         } else {
-          $principal =$loan->loan_amount;
-          $interest = ($loan->loan_amount * 0.05) / 2;
+          $principal =$request->input('amount');
+          $interest = ($request->input('amount') * 0.05) / 2;
   
           LoanStatements::create([
             'loan_id' => $loan->id,
@@ -355,7 +355,7 @@ class LoansController extends Controller
 
       $totalLS = LoanStatements::where('loan_id', $loan->loan_id)->sum('amortization');
 
-      $semitotal = $totalLS / ($l->months_to_pay * 2);
+      $semitotal = $totalLS / ($l->months_to_pay);
 
       Payments::create([
         'loan_statement_id' => $loan->id,

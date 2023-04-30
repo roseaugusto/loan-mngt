@@ -4,6 +4,7 @@ import { apiRequest } from '../utils/apiRequest';
 import { useParams } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import { Payments } from './Payments';
+import { Button, Modal } from 'react-bootstrap';
 import { Breadcrumb, Table, Badge, Container, Row, Col, Tabs, Tab } from 'react-bootstrap';
 
 export const UserLoanDetails = () => {
@@ -18,9 +19,11 @@ export const UserLoanDetails = () => {
   });
   const [tabKey, setTabKey] = useState('details');
   const [user, setUser] = useState({});
+  const [show, setShow] = useState(false);
+  const [amount, setAmount] = useState(0);
 
   const updateStatus = async (status) => {
-    await apiRequest.patch(`/loans/${id}`, { status }).then((res) => {
+    await apiRequest.patch(`/loans/${id}`, { status, amount }).then((res) => {
       fetchData();
     });
   };
@@ -35,6 +38,7 @@ export const UserLoanDetails = () => {
   const fetchData = async () => {
     await apiRequest.get(`/loans/${id}`).then((res) => {
       setLoan(res.data || []);
+      setAmount(res.data?.loan_amount || 0);
       let asum = 0;
       let isum = 0;
       let psum = 0;
@@ -114,7 +118,12 @@ export const UserLoanDetails = () => {
       <br />
       {loan.status === 'pending' && user?.role === 'admin' ? (
         <div className='d-flex justify-content-end'>
-          <button className='btn btn-success mr-2' onClick={() => updateStatus('approved')}>
+          <button
+            className='btn btn-success mr-2'
+            onClick={() => {
+              setShow(true);
+            }}
+          >
             Approve
           </button>
           <button className='btn btn-danger' onClick={() => updateStatus('cancelled')}>
@@ -208,17 +217,17 @@ export const UserLoanDetails = () => {
                     <tr key={index}>
                       <td>{key.month}</td>
                       <td>{key.due_date}</td>
-                      <td> {key.principal.toLocaleString()}</td>
-                      <td> {key.interest.toLocaleString()}</td>
-                      <td> {key.amortization.toLocaleString()}</td>
-                      <td>{(calculate('interest') / (loan.months_to_pay * 2)).toLocaleString()}</td>
+                      <td>{key.principal.toLocaleString()}</td>
+                      <td>{key.interest.toLocaleString()}</td>
+                      <td>{key.amortization.toLocaleString()}</td>
+                      <td>{(calculate('interest') / loan.months_to_pay).toLocaleString()}</td>
                       <td>
-                        {(calculate('amortization') / (loan.months_to_pay * 2))
+                        {(calculate('amortization') / loan.months_to_pay)
                           .toFixed(2)
                           .toLocaleString()}
                       </td>
-                      <td> {key.penalty?.toLocaleString() || 0}</td>
-                      <td> {key.outstanding.toLocaleString()}</td>
+                      <td>{key.penalty?.toLocaleString() || 0}</td>
+                      <td>{key.outstanding.toLocaleString()}</td>
                       <td>
                         <Badge bg={getStatus(key.status)} className='text-white px-4'>
                           {key.status}
@@ -258,6 +267,34 @@ export const UserLoanDetails = () => {
           <Payments payments={loan.payments} total={calculate('payments')} />
         </Tab>
       </Tabs>
+      <Modal show={show} onHide={() => setShow(false)}>
+        <form onSubmit={() => updateStatus('approved')}>
+          <Modal.Header className='text-white' style={{ backgroundColor: '#6778ee' }}>
+            <Modal.Title>Enter Final Loan Amount</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className='mb-3'>
+              <h6>Amount</h6>
+              <input
+                type='number'
+                className='form-control'
+                pattern='^[0-9,]*$'
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                required
+              />
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant='secondary' onClick={() => setShow(false)}>
+              Close
+            </Button>
+            <Button variant='primary' type='submit'>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </form>
+      </Modal>
     </Page>
   );
 };

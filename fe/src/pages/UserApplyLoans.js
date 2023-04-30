@@ -8,7 +8,7 @@ export const UserApplyLoans = () => {
   const [loan, setLoan] = useState({
     loan_amount: '',
     type: null,
-    months_to_pay: 12,
+    months_to_pay: 24,
   });
 
   const options = [
@@ -24,6 +24,18 @@ export const UserApplyLoans = () => {
     { value: '10', label: 10 },
     { value: '11', label: 11 },
     { value: '12', label: 12 },
+    { value: '1', label: 13 },
+    { value: '2', label: 14 },
+    { value: '3', label: 15 },
+    { value: '4', label: 16 },
+    { value: '5', label: 17 },
+    { value: '6', label: 18 },
+    { value: '7', label: 19 },
+    { value: '8', label: 20 },
+    { value: '9', label: 21 },
+    { value: '10', label: 22 },
+    { value: '11', label: 23 },
+    { value: '12', label: 24 },
   ];
   const [selectedOption, setSelectedOption] = useState(null);
 

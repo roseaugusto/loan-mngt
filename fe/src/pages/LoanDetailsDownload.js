@@ -133,11 +133,9 @@ export const LoanDetailsDownload = () => {
                 <td> {key.principal.toLocaleString()}</td>
                 <td> {key.interest.toLocaleString()}</td>
                 <td> {key.amortization.toLocaleString()}</td>
-                <td>{(calculate('interest') / (loan.months_to_pay * 2)).toLocaleString()}</td>
+                <td>{(calculate('interest') / loan.months_to_pay).toLocaleString()}</td>
                 <td>
-                  {(calculate('amortization') / (loan.months_to_pay * 2))
-                    .toFixed(2)
-                    .toLocaleString()}
+                  {(calculate('amortization') / loan.months_to_pay).toFixed(2).toLocaleString()}
                 </td>
                 <td> {key.penalty?.toLocaleString() || 0}</td>
                 <td> {key.outstanding.toLocaleString()}</td>
