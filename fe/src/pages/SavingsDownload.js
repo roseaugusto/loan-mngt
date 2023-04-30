@@ -62,7 +62,7 @@ export const SavingsDownload = () => {
           <div>
             <Image fluid src='/logo.jpeg' width={'100px'} />
           </div>
-          <h3>Statement of Account</h3>
+          <h3>Owners Capital</h3>
         </div>
         <b>ID:</b> {user?.id} <br />
         <b>{user?.role === 'admin' ? 'Prepared By: ' : 'Name: '}</b> {user?.name} <br />
@@ -77,8 +77,8 @@ export const SavingsDownload = () => {
                   <th>Member Name</th>
                 </>
               ) : null}
-              <th>Debit</th>
               <th>Credit</th>
+              <th>Debit</th>
               {user?.role === 'member' ? <th>Balance</th> : null}
             </tr>
           </thead>

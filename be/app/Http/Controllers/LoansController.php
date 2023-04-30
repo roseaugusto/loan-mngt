@@ -163,64 +163,52 @@ class LoansController extends Controller
         'check_amount' => 0,
         'loan_amount' => $fields['loan_amount'],
         'type' => $fields['type'],
+        'months_to_pay' => $request->input('months_to_pay'),
         'status' => 'pending',
       ]);
 
       $todaydate = strtotime(date("Y/m/d"));
-      $rate = 0.03;
-      $numberOfMonths = 12;
+      $rate = 0.015;
+      $numberOfMonths = $request->input('months_to_pay') * 2;
+      $semiMonthlyPrincipal = $fields['loan_amount'] / $numberOfMonths;
 
       $lastLsCount = LoanStatements::count();
 
-      if($fields['type'] === 'regular') {
+      if($fields['type'] === 'regular') { 
         for($i=1; $i<=$numberOfMonths; $i++) {
-          $duedate = date('Y-m-d', strtotime('+'.$i.' month', $todaydate));
+          $duedate = date('Y-m-d', strtotime('+'.($i*15).' days', $todaydate));
+
           if ($i == 1) {
-            $principal = $fields['loan_amount'];
             $outstanding = $fields['loan_amount'];
           } else {
             $principal = $outstanding;
           }
   
           $lsCode =  $i == 1 ? "LS".date("ymd").$lastLsCount + 1 : "LS".date("ymd").$lastLsCount + $i;
-  
-          $interestPerMonth = $principal * ($rate / $numberOfMonths);
+          
+          // interest / 600
+          $interestPerMonth = $outstanding * $rate;
+
           $usefullLife = (1 - (pow((1+($rate/$numberOfMonths)), ($numberOfMonths * -1))));
   
-          // monthly
-          $amortization = $i == 1 ? $interestPerMonth / $usefullLife : $amortization;
+          // monthly / 2666.67
+          $amortization = $semiMonthlyPrincipal + $interestPerMonth;
   
-          // ang loan jud
-          $principal = $amortization-$interestPerMonth;
+          // ang loan jud / 1666.67 (fixed)
+          $principal = $semiMonthlyPrincipal;
   
-          // ang original loan - principal
+          // ang original loan - principal / 40000
           $outstanding = $outstanding - $principal;
 
-          $half_amortization = ($amortization / 2);
-          $half_interestPerMonth = ($interestPerMonth / 2);
-          $half_principal = ($principal / 2);
-          $half_outstanding = ($outstanding / 2);
-
-          LoanStatements::create([
-            'loan_id' => $loan->id,
-            'month' =>  date('m', strtotime('-1 month', strtotime($duedate))),
-            'due_date' => date('Y-m-d', strtotime('-15 days', strtotime($duedate))),
-            'amortization' => $half_amortization,
-            'interest' => $half_interestPerMonth,
-            'principal' => $half_principal,
-            'outstanding' => $half_outstanding,
-            'ls_code' => $lsCode.'1',
-          ]);
-  
           LoanStatements::create([
             'loan_id' => $loan->id,
             'month' =>  date('m', strtotime('-1 month', strtotime($duedate))),
             'due_date' => $duedate,
-            'amortization' => $half_amortization,
-            'interest' => $half_interestPerMonth,
-            'principal' => $half_principal,
-            'outstanding' => $half_outstanding,
-            'ls_code' => $lsCode.'2',
+            'amortization' => $amortization,
+            'interest' => $interestPerMonth,
+            'principal' => $principal,
+            'outstanding' => $outstanding,
+            'ls_code' => $lsCode.'1',
           ]);
         }
       } else {
@@ -288,24 +276,25 @@ class LoansController extends Controller
     public function pay(Request $request, string $id)
     {
       $loan = LoanStatements::findOrFail($id);
-      $l = Payments::count();
-      $code = 'P'.date("ymd").$l;
+      $p = Payments::count();
+      $code = 'P'.date("ymd").$p;
+      $l=Loans::with('statements')->find($loan->loan_id);
+
+      $totalLS = LoanStatements::where('loan_id', $loan->loan_id)->sum('amortization');
+
+      $semitotal = $totalLS / ($l->months_to_pay * 2);
 
       Payments::create([
         'loan_statement_id' => $loan->id,
         'loan_id' => $loan->loan_id,
         'trans_code' => $code,
-        'amount' => ($loan->amortization + $loan->penalty),
+        'amount' => ($semitotal + $loan->penalty),
       ]);
 
-      
       $loan->status = 'paid';
       $loan->save();
 
       $total = Payments::where('loan_id', $loan->loan_id)->sum('amount');
-
-
-      $l=Loans::with('statements')->find($loan->loan_id);
 
       $sum = 0;
       foreach($l->statements as $s) {

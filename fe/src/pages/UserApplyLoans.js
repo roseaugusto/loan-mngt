@@ -2,12 +2,35 @@ import React, { useState } from 'react';
 import { Page } from './Page';
 import { Breadcrumb } from 'react-bootstrap';
 import { apiRequest } from '../utils/apiRequest';
+import Select from 'react-select';
 
 export const UserApplyLoans = () => {
   const [loan, setLoan] = useState({
     loan_amount: '',
-    type: 'regular',
+    type: null,
+    months_to_pay: 12,
   });
+
+  const options = [
+    { value: '1', label: 1 },
+    { value: '2', label: 2 },
+    { value: '3', label: 3 },
+    { value: '4', label: 4 },
+    { value: '5', label: 5 },
+    { value: '6', label: 6 },
+    { value: '7', label: 7 },
+    { value: '8', label: 8 },
+    { value: '9', label: 9 },
+    { value: '10', label: 10 },
+    { value: '11', label: 11 },
+    { value: '12', label: 12 },
+  ];
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const handleChange = (option) => {
+    setSelectedOption(option);
+    setLoan({ ...loan, months_to_pay: option.value });
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -69,6 +92,12 @@ export const UserApplyLoans = () => {
             />
             <label className='form-check-label'>Petty Cash</label>
           </div>
+          {loan.type === 'regular' ? (
+            <div className='mt-3'>
+              <h6>Number of Months to Pay</h6>
+              <Select value={selectedOption} onChange={handleChange} options={options} />
+            </div>
+          ) : null}
         </div>
         <div className='text-center'>
           <button type='submit' className='btn btn-primary'>

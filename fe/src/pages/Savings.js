@@ -52,8 +52,8 @@ export const Savings = () => {
                 <th>Member Name</th>
               </>
             ) : null}
-            <th>Debit</th>
             <th>Credit</th>
+            <th>Debit</th>
             {user?.role === 'member' ? <th>Balance</th> : null}
           </tr>
         </thead>

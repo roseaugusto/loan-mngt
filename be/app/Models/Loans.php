@@ -17,7 +17,8 @@ class Loans extends Model
       'type',
       'status',
       'penalty',
-      'penalty_updated'
+      'penalty_updated',
+      'months_to_pay'
   ];
 
   public function user() {

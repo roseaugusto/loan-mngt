@@ -26,6 +26,7 @@ export const UserLoanDetails = () => {
   };
 
   const pay = async (id) => {
+    if (!window.confirm('Are you sure?')) return;
     await apiRequest.patch(`/loans/pay/${id}`).then((res) => {
       fetchData();
     });
@@ -127,7 +128,7 @@ export const UserLoanDetails = () => {
             <b>Name:</b> {loan.user?.name}
           </Col>
           <Col className='text-right'>
-            <b>Amount Loan:</b> Php {loan.loan_amount?.toLocaleString()}
+            <b>Amount Loan:</b> {loan.loan_amount?.toLocaleString()}
           </Col>
         </Row>
         <Row>
@@ -165,7 +166,7 @@ export const UserLoanDetails = () => {
                 <tr>
                   <th>Applicable Month</th>
                   <th>Due Date</th>
-                  <th colSpan={4}>Amount</th>
+                  <th colSpan={6}>Amount</th>
                   <th>Outstanding Principal Balance</th>
                   <th>Status</th>
                   {user?.role === 'admin' ? <th>Actions</th> : null}
@@ -173,17 +174,19 @@ export const UserLoanDetails = () => {
                 <tr>
                   <th />
                   <th />
-                  <th>Amortization</th>
-                  <th>Interest</th>
                   <th>Principal</th>
+                  <th>Interest</th>
+                  <th>Amortization</th>
+                  <th>Semi Gross Interest</th>
+                  <th>Semi Monthly Amortization</th>
                   <th>Penalty</th>
                   <th />
                   <th />
                   <th />
                 </tr>
                 <tr>
-                  <th colSpan={6} />
-                  <th>Php {loan.loan_amount?.toLocaleString()}</th>
+                  <th colSpan={8} />
+                  <th> {loan.loan_amount?.toLocaleString()}</th>
                   <th />
                   <th />
                 </tr>
@@ -193,11 +196,17 @@ export const UserLoanDetails = () => {
                   <tr key={index}>
                     <td>{key.month}</td>
                     <td>{key.due_date}</td>
-                    <td>Php {key.amortization.toLocaleString()}</td>
-                    <td>Php {key.interest.toLocaleString()}</td>
-                    <td>Php {key.principal.toLocaleString()}</td>
-                    <td>Php {key.penalty?.toLocaleString() || 0}</td>
-                    <td>Php {key.outstanding.toLocaleString()}</td>
+                    <td> {key.principal.toLocaleString()}</td>
+                    <td> {key.interest.toLocaleString()}</td>
+                    <td> {key.amortization.toLocaleString()}</td>
+                    <td>{(calculate('interest') / (loan.months_to_pay * 2)).toLocaleString()}</td>
+                    <td>
+                      {(calculate('amortization') / (loan.months_to_pay * 2))
+                        .toFixed(2)
+                        .toLocaleString()}
+                    </td>
+                    <td> {key.penalty?.toLocaleString() || 0}</td>
+                    <td> {key.outstanding.toLocaleString()}</td>
                     <td>
                       <Badge bg={getStatus(key.status)} className='text-white px-4'>
                         {key.status}
@@ -218,10 +227,12 @@ export const UserLoanDetails = () => {
                 ))}
                 <tr>
                   <th colSpan={2}>Total</th>
-                  <th>Php {calculate('amortization').toLocaleString()}</th>
-                  <th>Php {calculate('interest').toLocaleString()}</th>
-                  <th>Php {calculate('principal').toLocaleString()}</th>
-                  <th>Php {calculate('penalty').toLocaleString()}</th>
+                  <th> {calculate('principal').toLocaleString()}</th>
+                  <th> {calculate('interest').toLocaleString()}</th>
+                  <th> {calculate('amortization').toLocaleString()}</th>
+                  <th> {calculate('interest').toLocaleString()}</th>
+                  <th> {calculate('amortization').toLocaleString()}</th>
+                  <th> {calculate('penalty').toLocaleString()}</th>
                   <th colSpan={3} />
                 </tr>
               </tbody>
