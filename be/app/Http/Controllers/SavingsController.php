@@ -12,7 +12,7 @@ class SavingsController extends Controller
   public function show()
   {
     if (auth()->user()->role === 'admin') {
-      $s= Savings::with('user')->orderBy('id', 'desc')->get();
+      $s= Savings::with('user')->orderBy('id', 'desc')->paginate(10);
     } else {
       $s= Savings::with('user')->where('user_id', auth()->user()->id)->orderBy('id', 'desc')->get();
     }
@@ -24,10 +24,10 @@ class SavingsController extends Controller
       $fields = $request->validate([
         'amount' => 'required',
         'type' => 'required',
-        'name' => 'required',
+        'id' => 'required',
       ]);
 
-      $user = User::where('name', $fields['name'])->first();
+      $user = User::where('id', $fields['id'])->first();
 
       $latest = Savings::where('user_id', $user->id)->orderBy('id', 'desc')->first();
 

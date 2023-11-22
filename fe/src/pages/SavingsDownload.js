@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { apiRequest } from '../utils/apiRequest';
-import { useParams } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import { Table, Image } from 'react-bootstrap';
 import { jsPDF } from 'jspdf';
@@ -10,7 +9,7 @@ export const SavingsDownload = () => {
   const exportRef = useRef();
 
   const [user, setUser] = useState({});
-  const [savings, setSavings] = useState([]);
+  const [savings, setSavings] = useState(null);
 
   const fetchData = async () => {
     await apiRequest.get(`/savings`).then((res) => {
@@ -83,16 +82,10 @@ export const SavingsDownload = () => {
             </tr>
           </thead>
           <tbody>
-            {savings.length === 0 ? (
-              <tr>
-                <td colSpan={9} className='text-center'>
-                  No Transaction/s available
-                </td>
-              </tr>
-            ) : (
-              savings.map((key, index) => (
+            {savings ? (
+              savings.data.map((key, index) => (
                 <tr key={index}>
-                  <td>{key.created_at}</td>
+                  <td>{DateTime.fromISO(key.created_at).toFormat('yyyy-MM-dd')}</td>
                   <td>{key.code}</td>
                   {user?.role === 'admin' ? (
                     <>
@@ -106,6 +99,12 @@ export const SavingsDownload = () => {
                   {user?.role === 'member' ? <td>{key.balance.toLocaleString()}</td> : null}
                 </tr>
               ))
+            ) : (
+              <tr>
+                <td colSpan={9} className='text-center'>
+                  No Transaction/s available
+                </td>
+              </tr>
             )}
           </tbody>
         </Table>

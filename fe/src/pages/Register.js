@@ -35,7 +35,7 @@ export const Register = () => {
           <div className='d-flex flex-row align-items-center'>
             <div className='px-5 py-2 w-50'>
               <form onSubmit={onSubmit}>
-                <h3 className='card-title text-center mb-2'>BCC Loan Management</h3>
+                <h3 className='card-title text-center mb-2'>Loan Management</h3>
                 <h5 className='card-title text-center my-2'>Registration</h5>
                 <div className='mb-3'>
                   <h6>Name</h6>

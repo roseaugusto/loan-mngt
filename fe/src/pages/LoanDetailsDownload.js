@@ -129,7 +129,7 @@ export const LoanDetailsDownload = () => {
             {loan.statements?.map((key, index) => (
               <tr key={index}>
                 <td>{key.month}</td>
-                <td>{key.due_date}</td>
+                <td>{DateTime.fromISO(key.due_date).toFormat('yyyy-MM-dd')}</td>
                 <td> {key.principal.toLocaleString()}</td>
                 <td> {key.interest.toLocaleString()}</td>
                 <td> {key.amortization.toLocaleString()}</td>

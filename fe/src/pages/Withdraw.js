@@ -8,7 +8,7 @@ export const Withdraw = () => {
   const [saving, setSaving] = useState({
     amount: '',
     type: 'debit',
-    name: null,
+    id: null,
   });
 
   useEffect(() => {
@@ -37,14 +37,15 @@ export const Withdraw = () => {
         </Breadcrumb.Item>
         <Breadcrumb.Item active>Withdraw</Breadcrumb.Item>
       </Breadcrumb>
+      <br />
       <form onSubmit={onSubmit}>
         <h3 className='card-title text-center my-2'>Withdraw</h3>
         <div className='mb-3'>
-          <h6>Member Name</h6>
+          <h6>Member ID</h6>
           <input
             type='text'
             className='form-control'
-            onChange={(e) => setSaving({ ...saving, name: e.target.value })}
+            onChange={(e) => setSaving({ ...saving, id: e.target.value })}
             required
           />
         </div>

@@ -43,8 +43,8 @@ class LoansController extends Controller
 
      $last_year = date('Y', strtotime('-1 year'));
 
-     $cbu_latest = Savings::where('type', 'credit')->whereYear('created_at', date('Y'))->sum('amount');
-     $cbu_lastyear = Savings::where('type', 'credit')->whereYear('created_at', $last_year)->sum('amount');
+     $savings_latest = Savings::where('type', 'credit')->whereYear('created_at', date('Y'))->sum('amount');
+     $savings_lastyear = Savings::where('type', 'credit')->whereYear('created_at', $last_year)->sum('amount');
 
      $loan_latest = Loans::where('type', 'regular')->whereYear('created_at', date('Y'))->sum('loan_amount');
      $loan_lastyear = Loans::where('type', 'regular')->whereYear('created_at', $last_year)->sum('loan_amount');
@@ -102,9 +102,9 @@ class LoansController extends Controller
       return response()->json([
         'pendings' => $pendingLoans, 
         'dues' => $dueLoans,
-        'cbu' => [
-          'latest' => $cbu_latest,
-          'previous' => $cbu_lastyear,
+        'savings' => [
+          'latest' => $savings_latest,
+          'previous' => $savings_lastyear,
         ],
         'loan' => [
           'latest' => $loan_latest,

@@ -97,19 +97,21 @@ export const AdminDashboard = () => {
         <Col>
           <Card style={{ minHeight: '180px' }}>
             <Card.Body>
-              <Card.Title>CBU</Card.Title>
+              <Card.Title>SAVINGS</Card.Title>
               <Card.Text>
                 <div className='d-flex align-items-center justify-content-between'>
                   <div>
-                    <h5> {data?.cbu?.latest.toLocaleString()}</h5>
+                    <h5> {data?.savings?.latest.toLocaleString()}</h5>
                     <div
-                      className={`mt-4 ${calculate('cbu') < 0 ? 'text-danger' : 'text-success'}`}
+                      className={`mt-4 ${
+                        calculate('savings') < 0 ? 'text-danger' : 'text-success'
+                      }`}
                     >
                       <FontAwesomeIcon
-                        icon={calculate('cbu') < 0 ? faLongArrowDown : faLongArrowUp}
-                        color={calculate('cbu') < 0 ? 'red' : 'green'}
+                        icon={calculate('savings') < 0 ? faLongArrowDown : faLongArrowUp}
+                        color={calculate('savings') < 0 ? 'red' : 'green'}
                       />
-                      <span className='ml-2'>{calculate('cbu')}%</span>
+                      <span className='ml-2'>{calculate('savings')}%</span>
                     </div>
                   </div>
                   <FontAwesomeIcon icon={faCalendar} size='2xl' color='purple' />
@@ -196,7 +198,7 @@ export const AdminDashboard = () => {
       <br />
       <Card>
         <Card.Body>
-          <Card.Title style={{ color: '#6778ee' }}>Yearly Recap Report for CBU</Card.Title>
+          <Card.Title style={{ color: '#6778ee' }}>Yearly Recap Report for SAVINGS</Card.Title>
           <Line options={options} data={chartdata} />
         </Card.Body>
       </Card>
@@ -237,7 +239,7 @@ export const AdminDashboard = () => {
             <thead>
               <tr>
                 <th>Name</th>
-                <th>CBU</th>
+                <th>SAVINGS</th>
                 <th>Email</th>
                 <th>Address</th>
                 <th>Birthdate</th>

@@ -48,7 +48,7 @@ export const Page = ({ children, title = '' }) => {
               className='d-inline-block align-top'
               alt='React Bootstrap logo'
             />{' '}
-            BCC Loan Management
+            Loan Management
           </Navbar.Brand>
           <Navbar.Toggle aria-controls='navbarScroll' />
           <Navbar.Collapse id='navbarScroll'>
@@ -58,7 +58,7 @@ export const Page = ({ children, title = '' }) => {
               </Nav.Link>
               <Nav.Link href='/user/info'>Member Info</Nav.Link>
 
-              <NavDropdown title='CBU' id='navbarScrollingDropdown'>
+              <NavDropdown title='Savings' id='navbarScrollingDropdown'>
                 <NavDropdown.Item href='/savings'>Savings</NavDropdown.Item>
                 {user?.role === 'admin' ? (
                   <>
@@ -75,18 +75,6 @@ export const Page = ({ children, title = '' }) => {
                 <NavDropdown.Item href='/user/regular-loan'>Regular Loan</NavDropdown.Item>
                 <NavDropdown.Item href='/user/petty-loan'>Petty Cash</NavDropdown.Item>
               </NavDropdown>
-              {user?.role === 'admin' ? (
-                <>
-                  <Nav.Link href=''>Journals</Nav.Link>
-                  <NavDropdown title='Reports' id='navbarScrollingDropdown'>
-                    <NavDropdown.Item href='/income-statement'>Income Statement</NavDropdown.Item>
-                    <NavDropdown.Item href='/cash-flow'>Cash Flow</NavDropdown.Item>
-                    <NavDropdown.Item href='/financial-statement'>
-                      Statement of Financial
-                    </NavDropdown.Item>
-                  </NavDropdown>
-                </>
-              ) : null}
             </Nav>
           </Navbar.Collapse>
           <Navbar.Collapse className='justify-content-end'>
@@ -100,6 +88,14 @@ export const Page = ({ children, title = '' }) => {
             >
               <b>&#9212; Logout</b>
             </Navbar.Text>
+            {/* 
+            //drop down icon here for more settings
+            <>
+              <NavDropdown title='Reports' id='navbarScrollingDropdown'>
+                <NavDropdown.Item href='/user/info'>My Profile</NavDropdown.Item>
+                <NavDropdown.Item href='/logout'>Logout</NavDropdown.Item>
+              </NavDropdown>
+            </> */}
           </Navbar.Collapse>
         </Container>
       </Navbar>
